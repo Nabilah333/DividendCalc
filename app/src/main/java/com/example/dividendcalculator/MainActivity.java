@@ -10,8 +10,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import java.text.DecimalFormat;
 import android.content.Intent;
-import android.view.MenuItem;
-import android.content.Intent;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -35,12 +33,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-        buttonCalculate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                calculateDividend();
-            }
-        });
+        buttonCalculate.setOnClickListener(v -> calculateDividend());
     }
 
     private void calculateDividend() {
@@ -71,6 +64,24 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
+
+    @Override
+    public boolean onMenuOpened(int featureId, android.view.Menu menu) {
+        if (menu != null) {
+            if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
+                try {
+                    java.lang.reflect.Method m = menu.getClass().getDeclaredMethod(
+                            "setOptionalIconsVisible", Boolean.TYPE);
+                    m.setAccessible(true);
+                    m.invoke(menu, true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return super.onMenuOpened(featureId, menu);
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
